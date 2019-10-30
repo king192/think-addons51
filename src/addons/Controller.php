@@ -11,7 +11,7 @@
 namespace think\addons;
 
 use think\Request;
-use think\Config;
+use think\facade\Config;
 use think\Loader;
 
 /**
@@ -45,17 +45,17 @@ class Controller extends \think\Controller
      * @param Request $request Request对象
      * @access public
      */
-    public function __construct(Request $request = null)
+    public function __construct(App $app = null)
     {
         // 生成request对象
-        $this->request = is_null($request) ? Request::instance() : $request;
+        // $this->request = is_null($request) ? Request::instance() : $request;
         // 初始化配置信息
         $this->config = Config::get('template') ?: $this->config;
         // 处理路由参数
         $route = $this->request->param('route', '');
         $param = explode('-', $route);
         // 是否自动转换控制器和操作名
-        $convert = \think\Config::get('url_convert');
+        $convert = Config::get('url_convert');
         // 格式化路由的插件位置
         $this->action = $convert ? strtolower(array_pop($param)) : array_pop($param);
         $this->controller = $convert ? strtolower(array_pop($param)) : array_pop($param);
@@ -67,7 +67,7 @@ class Controller extends \think\Controller
         // 重置配置
         Config::set('template.view_path', ADDON_PATH . $this->addon . DS . $view_path . DS);
 
-        parent::__construct($request);
+        parent::__construct($app);
     }
 
     /**
